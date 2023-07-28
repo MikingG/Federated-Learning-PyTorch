@@ -54,8 +54,8 @@ if __name__ == '__main__':
             len_in *= x
             global_model = MLP(dim_in=len_in, dim_hidden=64,
                                dim_out=args.num_classes)
-    elif args.model == 'logistic':
-        global_model = LRmodel(784, 10)
+    # elif args.model == 'logistic': # add for logistic regression
+    #     global_model = LRmodel(784, 10) # add for logistic regression
     else:
         exit('Error: unrecognized model')
 
