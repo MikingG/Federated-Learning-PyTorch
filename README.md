@@ -109,3 +109,13 @@ Federated parameters (default values):
 * [Leaf: A Benchmark for Federated Settings (CMU)](https://leaf.cmu.edu/)
 * [TensorFlow Federated](https://www.tensorflow.org/federated)
 * [Google AI Blog Post](https://ai.googleblog.com/2017/04/federated-learning-collaborative.html)
+
+### 关于相关代码的阐述
+* baseline_main: 不采用联邦学习的时候的深度学习代码
+* federated_main: 当使用联邦学习的时候的深度学习代码（联邦学习算法只需要在这部分进行修改）
+* model: 定义模型类（如果需要定义模型可以在这部分添加）
+* update：包括模型的参数更新，计算损失和准确率以及数据划分
+* option：只是一些输入命令的参数，不需要进行修改
+* utils：获取数据集等一些列较为固定的操作，不需要修改
+综上所述，如果要更改联邦学习算法，即可直接在Federated_main修改
+涉及模型的修改，就可能需要更改其余部分，同时，对于数据的模型计算，需要时刻关注训练数据的大小与模型的一致性，需要很多调参的操作
