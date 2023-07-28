@@ -55,6 +55,7 @@ class LocalUpdate(object):
         # Set mode to train model
         model.train()
         epoch_loss = []
+        batch_size_constant = 10
 
         # Set optimizer for the local updates
         if self.args.optimizer == 'sgd':
@@ -68,14 +69,15 @@ class LocalUpdate(object):
             batch_loss = []
             for batch_idx, (images, labels) in enumerate(self.trainloader):
                 images, labels = images.to(self.device), labels.to(self.device)
-
+                images = torch.reshape(images, [-1, 1, 784])  #
                 model.zero_grad()
                 log_probs = model(images)
-                loss = self.criterion(log_probs, labels)
+                log_probs = torch.reshape(log_probs, [-1, batch_size_constant, 1])  #
+                loss = self.criterion(log_probs, labels.view(len(labels), 1))
                 loss.backward()
                 optimizer.step()
 
-                if self.args.verbose and (batch_idx % 10 == 0):
+                if self.args.verbose and (batch_idx % 1 == 0):
                     print('| Global Round : {} | Local Epoch : {} | [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
                         global_round, iter, batch_idx * len(images),
                         len(self.trainloader.dataset),
@@ -92,13 +94,16 @@ class LocalUpdate(object):
 
         model.eval()
         loss, total, correct = 0.0, 0.0, 0.0
+        image_size_constant = 10
 
         for batch_idx, (images, labels) in enumerate(self.testloader):
             images, labels = images.to(self.device), labels.to(self.device)
+            images = torch.reshape(images, [-1, 1, 784])  #
 
             # Inference
             outputs = model(images)
-            batch_loss = self.criterion(outputs, labels)
+            outputs = torch.reshape(outputs, [-1, image_size_constant, 1])  #
+            batch_loss = self.criterion(outputs, labels.view(len(labels), 1))
             loss += batch_loss.item()
 
             # Prediction
@@ -120,15 +125,17 @@ def test_inference(args, model, test_dataset):
 
     device = 'cuda' if args.gpu else 'cpu'
     criterion = nn.NLLLoss().to(device)
-    testloader = DataLoader(test_dataset, batch_size=128,
+    batch_size_constant = 64  #
+    testloader = DataLoader(test_dataset, batch_size=batch_size_constant,
                             shuffle=False)
 
     for batch_idx, (images, labels) in enumerate(testloader):
         images, labels = images.to(device), labels.to(device)
-
+        images = torch.reshape(images, [-1, 1, 784])   #
         # Inference
         outputs = model(images)
-        batch_loss = criterion(outputs, labels)
+        outputs = torch.reshape(outputs, [-1, batch_size_constant, 1])  #
+        batch_loss = criterion(outputs, labels.view(len(labels), 1))
         loss += batch_loss.item()
 
         # Prediction
