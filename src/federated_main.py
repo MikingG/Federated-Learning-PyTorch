@@ -15,7 +15,7 @@ from tensorboardX import SummaryWriter
 
 from options import args_parser
 from update import LocalUpdate, test_inference
-from models import MLP, CNNMnist, CNNFashion_Mnist, CNNCifar
+from models import MLP, CNNMnist, CNNFashion_Mnist, CNNCifar, LRmodel
 from utils import get_dataset, average_weights, exp_details
 
 
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     args = args_parser()
     exp_details(args)
 
-    if args.gpu_id:
+    if args.gpu:
         torch.cuda.set_device(args.gpu_id)
     device = 'cuda' if args.gpu else 'cpu'
 
@@ -38,7 +38,7 @@ if __name__ == '__main__':
 
     # BUILD MODEL
     if args.model == 'cnn':
-        # Convolutional neural netork
+        # Convolutional neural network
         if args.dataset == 'mnist':
             global_model = CNNMnist(args=args)
         elif args.dataset == 'fmnist':
@@ -54,6 +54,8 @@ if __name__ == '__main__':
             len_in *= x
             global_model = MLP(dim_in=len_in, dim_hidden=64,
                                dim_out=args.num_classes)
+    elif args.model == 'logistic':
+        global_model = LRmodel(784, 10)
     else:
         exit('Error: unrecognized model')
 
