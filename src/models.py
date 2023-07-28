@@ -118,3 +118,16 @@ class modelC(nn.Module):
         pool_out.squeeze_(-1)
         pool_out.squeeze_(-1)
         return pool_out
+
+#logistic regression mnist
+class LRmodel(nn.Module):
+    def __init__(self, n_input, n_output):
+        super(LRmodel, self).__init__()
+        self.linear = nn.Linear(n_input, n_output)
+        self.sigmoid = nn.Sigmoid()
+
+    def forward(self, x):
+        # print(x)
+        outputs = self.linear(x)
+        # return F.log_softmax(outputs, dim=1)
+        return self.sigmoid(outputs)
