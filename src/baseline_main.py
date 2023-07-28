@@ -42,8 +42,8 @@ if __name__ == '__main__':
             len_in *= x
             global_model = MLP(dim_in=len_in, dim_hidden=64,
                                dim_out=args.num_classes)
-    elif args.model == 'logistic':
-        global_model = LRmodel(784, 64)
+    # elif args.model == 'logistic':      # add for logistic regression
+    #     global_model = LRmodel(784, 64)     # add for logistic regression
     else:
         exit('Error: unrecognized model')
 
@@ -71,13 +71,14 @@ if __name__ == '__main__':
 
         for batch_idx, (images, labels) in enumerate(trainloader):
             images, labels = images.to(device), labels.to(device)
-            images = torch.reshape(images, [-1, 1, 784])   #
+            # images = torch.reshape(images, [-1, 1, 784])   # add for logistic regression
             optimizer.zero_grad()
             outputs = global_model(images)
             # print(outputs.shape)
             # print(labels)
-            outputs = torch.reshape(outputs, [-1, batch_size_constant, 1])   #
-            loss = criterion(outputs, labels.view(len(labels), 1))
+            # outputs = torch.reshape(outputs, [-1, batch_size_constant, 1])   # add for logistic regression
+            # loss = criterion(outputs, labels.view(len(labels), 1))  # add for logistic regression
+            loss = criterion(outputs, labels) # origin code
             loss.backward()
             optimizer.step()
 
