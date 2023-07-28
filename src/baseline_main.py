@@ -5,6 +5,7 @@
 
 from tqdm import tqdm
 import matplotlib.pyplot as plt
+import tensorflow as tf
 
 import torch
 from torch.utils.data import DataLoader
@@ -12,7 +13,7 @@ from torch.utils.data import DataLoader
 from utils import get_dataset
 from options import args_parser
 from update import test_inference
-from models import MLP, CNNMnist, CNNFashion_Mnist, CNNCifar
+from models import MLP, CNNMnist, CNNFashion_Mnist, CNNCifar, LRmodel
 
 
 if __name__ == '__main__':
@@ -41,6 +42,8 @@ if __name__ == '__main__':
             len_in *= x
             global_model = MLP(dim_in=len_in, dim_hidden=64,
                                dim_out=args.num_classes)
+    elif args.model == 'logistic':
+        global_model = LRmodel(784, 64)
     else:
         exit('Error: unrecognized model')
 
@@ -58,7 +61,8 @@ if __name__ == '__main__':
         optimizer = torch.optim.Adam(global_model.parameters(), lr=args.lr,
                                      weight_decay=1e-4)
 
-    trainloader = DataLoader(train_dataset, batch_size=64, shuffle=True)
+    batch_size_constant = 64
+    trainloader = DataLoader(train_dataset, batch_size=batch_size_constant, shuffle=True)
     criterion = torch.nn.NLLLoss().to(device)
     epoch_loss = []
 
@@ -67,10 +71,13 @@ if __name__ == '__main__':
 
         for batch_idx, (images, labels) in enumerate(trainloader):
             images, labels = images.to(device), labels.to(device)
-
+            images = torch.reshape(images, [-1, 1, 784])   #
             optimizer.zero_grad()
             outputs = global_model(images)
-            loss = criterion(outputs, labels)
+            # print(outputs.shape)
+            # print(labels)
+            outputs = torch.reshape(outputs, [-1, batch_size_constant, 1])   #
+            loss = criterion(outputs, labels.view(len(labels), 1))
             loss.backward()
             optimizer.step()
 
@@ -89,7 +96,7 @@ if __name__ == '__main__':
     plt.plot(range(len(epoch_loss)), epoch_loss)
     plt.xlabel('epochs')
     plt.ylabel('Train loss')
-    plt.savefig('../save/nn_{}_{}_{}.png'.format(args.dataset, args.model,
+    plt.savefig('/Users/michael/PycharmProjects/pythonProject/Federated-Learning-PyTorch/save/nn_{}_{}_{}.png'.format(args.dataset, args.model,
                                                  args.epochs))
 
     # testing
