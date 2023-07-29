@@ -6,7 +6,7 @@
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 import tensorflow as tf
-
+import os
 import torch
 from torch.utils.data import DataLoader
 
@@ -97,8 +97,11 @@ if __name__ == '__main__':
     plt.plot(range(len(epoch_loss)), epoch_loss)
     plt.xlabel('epochs')
     plt.ylabel('Train loss')
-    plt.savefig('/Users/michael/PycharmProjects/pythonProject/Federated-Learning-PyTorch/save/nn_{}_{}_{}.png'.format(args.dataset, args.model,
+    print('Saving figure...')
+    print(os.path.exists('D:/大三上学习/暑假大创/代码/晨霖联邦学习框架/save/'))
+    plt.savefig('D:/大三上学习/暑假大创/代码/晨霖联邦学习框架/save/nn_{}_{}_{}.png'.format(args.dataset, args.model,
                                                  args.epochs))
+    print('Figure saved.')
 
     # testing
     test_acc, test_loss = test_inference(args, global_model, test_dataset)
