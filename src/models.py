@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # Python version: 3.6
 
+import numpy as np
 from torch import nn
 import torch.nn.functional as F
 
@@ -120,14 +121,38 @@ class modelC(nn.Module):
         return pool_out
 
 #logistic regression mnist
+# class LRmodel:
+#     def init(self):
+#         self.eta = 0.1
+#         self.bound = 1e-8
+#
+#     def loss_func(self, x, y, theta):
+#         p_predict = self.sigmoid(x.dot(theta))
+#         try:
+#             return -np.sum(y * np.log(p_predict) + (1 - y) * np.log(1 - p_predict))
+#         except:
+#             return float('inf')
+#     def grad(self, x, y, theta):
+#         output = self.sigmoid(x.dot(theta))
+#         return x.T.dot(output - y) / len(x)
+#     def grad_des(self, x, y, init_theta, n_iters):
+#         theta = init_theta
+#         for i_iters in range(n_iters):
+#             gradient = self.grad(x, y, theta)
+#             last_theta = theta
+#             theta = theta - self.eta * gradient
+#             if abs(self.loss_func(theta, x, y) - self.loss_func(last_theta, x, y)) < self.bound:
+#                 break
+#         return theta
+
 class LRmodel(nn.Module):
     def __init__(self, n_input, n_output):
         super(LRmodel, self).__init__()
         self.linear = nn.Linear(n_input, n_output)
         self.sigmoid = nn.Sigmoid()
-
     def forward(self, x):
         # print(x)
         outputs = self.linear(x)
-        # return F.log_softmax(outputs, dim=1)
-        return self.sigmoid(outputs)
+        return F.log_softmax(outputs)
+        # return self.sigmoid(outputs)
+

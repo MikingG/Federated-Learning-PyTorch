@@ -69,12 +69,12 @@ class LocalUpdate(object):
             batch_loss = []
             for batch_idx, (images, labels) in enumerate(self.trainloader):
                 images, labels = images.to(self.device), labels.to(self.device)
-                # images = torch.reshape(images, [-1, 1, 784])  # add for logistic regression
+                images = torch.reshape(images, [-1, 1, 784])  # add for logistic regression
                 model.zero_grad()
                 log_probs = model(images)
-                # log_probs = torch.reshape(log_probs, [-1, batch_size_constant, 1])  # add for logistic regression
-                # loss = self.criterion(log_probs, labels.view(len(labels), 1)) # add for logistic regression
-                loss = self.criterion(log_probs, labels)
+                log_probs = torch.reshape(log_probs, [-1, batch_size_constant, 1])  # add for logistic regression
+                loss = self.criterion(log_probs, labels.view(len(labels), 1)) # add for logistic regression
+                # loss = self.criterion(log_probs, labels)
                 loss.backward()
                 optimizer.step()
 
@@ -99,13 +99,13 @@ class LocalUpdate(object):
 
         for batch_idx, (images, labels) in enumerate(self.testloader):
             images, labels = images.to(self.device), labels.to(self.device)
-            # images = torch.reshape(images, [-1, 1, 784])  # add for logistic regression
+            images = torch.reshape(images, [-1, 1, 784])  # add for logistic regression
 
             # Inference
             outputs = model(images)
-            # outputs = torch.reshape(outputs, [-1, image_size_constant, 1])  # add for logistic regression
-            # batch_loss = self.criterion(outputs, labels.view(len(labels), 1)) # add for logistic regression
-            batch_loss = self.criterion(outputs, labels) # others
+            outputs = torch.reshape(outputs, [-1, image_size_constant, 1])  # add for logistic regression
+            batch_loss = self.criterion(outputs, labels.view(len(labels), 1)) # add for logistic regression
+            # batch_loss = self.criterion(outputs, labels) # others
             loss += batch_loss.item()
 
             # Prediction
@@ -133,13 +133,13 @@ def test_inference(args, model, test_dataset):
 
     for batch_idx, (images, labels) in enumerate(testloader):
         images, labels = images.to(device), labels.to(device)
-        # images = torch.reshape(images, [-1, 1, 784])   # add for logistic regression
+        images = torch.reshape(images, [-1, 1, 784])   # add for logistic regression
 
         # Inference
         outputs = model(images)
-        # outputs = torch.reshape(outputs, [-1, batch_size_constant, 1])  # add for logistic regression
-        # batch_loss = criterion(outputs, labels.view(len(labels), 1))
-        batch_loss = criterion(outputs, labels) # origin code
+        outputs = torch.reshape(outputs, [-1, batch_size_constant, 1])  # add for logistic regression
+        batch_loss = criterion(outputs, labels.view(len(labels), 1))
+        # batch_loss = criterion(outputs, labels) # origin code
         loss += batch_loss.item()
 
         # Prediction
