@@ -77,8 +77,8 @@ if __name__ == '__main__':
             # outputs = global_model.grad_des(images, labels, np.ones(784, 1))
             # print(outputs.shape)
             # print(labels)
-            outputs = torch.reshape(outputs, [-1, batch_size_constant, 1])   # add for logistic regression
-            loss = criterion(outputs, labels.view(len(labels), 1))  # add for logistic regression
+            #原来是loss = criterion(outputs, labels.view(len(labels), 1))，然而，nn.NLLLoss()接收的应当是一个一维张量
+            loss = criterion(outputs, labels) #直接使用labels作为目标，而不对其进行重塑
             # loss = criterion(outputs, labels) # origin code
             loss.backward()
             optimizer.step()
