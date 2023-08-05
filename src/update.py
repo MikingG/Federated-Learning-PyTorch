@@ -137,9 +137,8 @@ def test_inference(args, model, test_dataset):
 
         # Inference
         outputs = model(images)
-        outputs = torch.reshape(outputs, [-1, batch_size_constant, 1])  # add for logistic regression
-        batch_loss = criterion(outputs, labels.view(len(labels), 1))
-        # batch_loss = criterion(outputs, labels) # origin code
+        # outputs = torch.reshape(outputs, [-1, batch_size_constant, 1])  # remove this line
+        batch_loss = criterion(outputs, labels)  # use labels directly without reshaping
         loss += batch_loss.item()
 
         # Prediction

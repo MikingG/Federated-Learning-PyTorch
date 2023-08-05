@@ -99,6 +99,7 @@ if __name__ == '__main__':
     plt.xlabel('epochs')
     plt.ylabel('Train loss')
     print('Saving figure...')
+    # 这里大家在自己电脑跑的时候记得修改成对应save文件夹的路径
     print(os.path.exists('D:/大三上学习/暑假大创/代码/晨霖联邦学习框架/save/'))
     plt.savefig('D:/大三上学习/暑假大创/代码/晨霖联邦学习框架/save/nn_{}_{}_{}.png'.format(args.dataset, args.model,
                                                  args.epochs))
